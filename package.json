@@ -1,0 +1,43 @@
+{
+  "name": "cryptocards",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "dev": "node server.js",
+    "build": "next build"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/storage": "^1.6.0",
+    "animate.css": "^3.6.1",
+    "axios": "^0.18.0",
+    "child_process": "^1.0.2",
+    "cloudinary": "^1.11.0",
+    "firebase": "^5.0.3",
+    "form-data": "^2.3.2",
+    "fs": "0.0.1-security",
+    "fs-extra": "^5.0.0",
+    "ganache-cli": "^6.0.3",
+    "mocha": "^4.1.0",
+    "multer": "^1.3.0",
+    "net": "^1.0.2",
+    "next": "^4.1.4",
+    "next-routes": "^1.2.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-form-data": "^0.2.3",
+    "semantic-ui-css": "^2.2.12",
+    "semantic-ui-react": "^0.77.2",
+    "solc": "^0.4.19",
+    "tls": "0.0.1",
+    "truffle-hdwallet-provider": "0.0.3",
+    "web3": "1.0.0-beta.26"
+  },
+  "devDependencies": {
+    "file-loader": "^1.1.11",
+    "url-loader": "^1.0.1"
+  }
+}
