@@ -26,7 +26,7 @@ class CampaignIndex extends Component {
       return a.Price - b.Price;
     });
 
-    const searchTerm = "ivy"
+    const searchTerm = "saur"
 
     const searchArray = allStructs.filter(function(v) {
     return Object.keys(v).some(function(k) {
