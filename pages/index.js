@@ -78,7 +78,7 @@ class CampaignIndex extends Component {
       items = items.filter( item => 
         item.header
           .toLowerCase()
-          .startsWith(searchValue.toLowerCase()))
+          .includes(searchValue.toLowerCase()))
     }
 
     return <Card.Group items={items} />;
