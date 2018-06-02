@@ -15,8 +15,8 @@ class CampaignIndex extends Component {
 
   state = {
     value: '',
-    sortBy1: 'CreatedDate',
-    sortBy2: 'High to low',
+    sortBy1: 'created',
+    sortBy2: 'Low to high'
   };
 
   static async getInitialProps() {  // static allows one to run class function without creating an instance!!
@@ -51,7 +51,7 @@ class CampaignIndex extends Component {
 //dynamically compute route for description tag below
   renderCampaigns() {
     let { sortBy1, sortBy2 } = this.state;
-    
+
     //const accounts = await web3.eth.getAccounts();
     //const ownerCards = await factory.methods.getCardsByOwner(accounts[0]).call();
 
@@ -62,7 +62,7 @@ class CampaignIndex extends Component {
             header: request.Name,
             meta: web3.utils.fromWei(request.Price, 'ether')+" ETH",
             href: `/campaigns/${request.Id}`,
-            created: request.CreatedDate,            
+            created: request.CreatedDate,
             //fluid: true  // causes cards to go full width of frame
           };
     });
@@ -90,7 +90,7 @@ class CampaignIndex extends Component {
         <h3>Marketplace</h3>
 
         <Grid>
-          <SearchSortPart 
+          <SearchSortPart
               searchHandler={searchHandler}
               searchValue={searchValue}
               sort1Handler={sort1Handler}
