@@ -35,18 +35,20 @@ const sortOptions2 = [
 
 
 let SortBy = ({sort1Handler, sort2Handler}) => 
-  <Grid.Column width={5}>
+  <Grid.Column width={6}>
     <h4 style={{display: 'inline'}}>Sort by:</h4>
+    {/* <div style={{ margin: '5px' }}> */}
     <Dropdown 
-      style={{display: 'inline'}}
+      style={{display: 'inline', marginLeft: '5px'}}
       placeholder='Select option' 
       defaultValue='created'
       fluid selection options={sortOptions1}
       onChange={sort1Handler} />
+    {/* </div> */}
     <Dropdown 
-      style={{display: 'inline'}}
+      style={{display: 'inline', marginLeft: '5px'}}
       placeholder='Select option' 
-      defaultValue='High to low'
+      defaultValue='Low to high'
       fluid selection options={sortOptions2}
       onChange={sort2Handler} />
   </Grid.Column>
@@ -64,7 +66,7 @@ let CreateNewBtn = () =>
     </Grid.Column>
 
 let SearchValueBtn = ({searchValue}) => 
-    <Grid.Column width={3}>
+    <Grid.Column width={2}>
       <div style={{ float: 'left', marginLeft: '-25px' }}>
         <Link route={`/search/${searchValue}`} >
           <a>
