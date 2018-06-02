@@ -34,27 +34,26 @@ const sortOptions2 = [
 ]
 
 
-let SortBy = ({sort1Handler, sort2Handler}) => 
-  <Grid.Column width={6}>
-    <h4 style={{display: 'inline'}}>Sort by:</h4>
-    {/* <div style={{ margin: '5px' }}> */}
-    <Dropdown 
-      style={{display: 'inline', marginLeft: '5px'}}
-      placeholder='Select option' 
+
+let SortBy = ({sort1Handler, sort2Handler}) =>
+  <Grid.Column width={5}>
+    <h4 style={{display: 'inline'}}>Sort by :   </h4>
+    <Dropdown
+      style={{display: 'inline'}}
+      placeholder='Select option'
       defaultValue='created'
       fluid selection options={sortOptions1}
       onChange={sort1Handler} />
-    {/* </div> */}
-    <Dropdown 
-      style={{display: 'inline', marginLeft: '5px'}}
-      placeholder='Select option' 
+    <Dropdown
+      style={{display: 'inline'}}
+      placeholder='Select option'
       defaultValue='Low to high'
       fluid selection options={sortOptions2}
       onChange={sort2Handler} />
   </Grid.Column>
 
 
-let CreateNewBtn = () => 
+let CreateNewBtn = () =>
     <Grid.Column width={3}>
       <div style={{ float: 'right' }}>
         <Link route="/campaigns/new">
@@ -65,8 +64,9 @@ let CreateNewBtn = () =>
       </div>
     </Grid.Column>
 
-let SearchValueBtn = ({searchValue}) => 
-    <Grid.Column width={2}>
+
+let SearchValueBtn = ({searchValue}) =>
+    <Grid.Column width={3}>
       <div style={{ float: 'left', marginLeft: '-25px' }}>
         <Link route={`/search/${searchValue}`} >
           <a>
@@ -76,7 +76,7 @@ let SearchValueBtn = ({searchValue}) =>
       </div>
     </Grid.Column>
 
-let SearchField = ({searchHandler, searchValue}) => 
+let SearchField = ({searchHandler, searchValue}) =>
     <Grid.Column width={5}>
       <Form>
         <Form.Field>
@@ -90,7 +90,7 @@ let SearchField = ({searchHandler, searchValue}) =>
       </Form>
     </Grid.Column>
 
-let SearchSortPart = ({searchHandler, searchValue, sort1Handler, sort2Handler}) => 
+let SearchSortPart = ({searchHandler, searchValue, sort1Handler, sort2Handler}) =>
     <Grid.Row>
       <SearchField searchHandler={searchHandler} searchValue={searchValue}/>
       <SearchValueBtn searchValue={searchValue}/>
