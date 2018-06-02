@@ -1,6 +1,7 @@
 const routes = require('next-routes')();
 
 routes
+  .add('/search/:term', '/search/searchindex')
   .add('/campaigns/new', '/campaigns/new')
   .add('/campaigns/mydeck', '/campaigns/mydeck')
   .add('/campaigns/:address', '/campaigns/show') //adding new routes mapping, : represents wildcard variable

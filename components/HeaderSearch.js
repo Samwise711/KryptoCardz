@@ -13,10 +13,6 @@ export default () => {
 
       <Menu.Menu position="right">
 
-      <Menu.Item>
-        <Input className='icon' icon='search' placeholder='Search...' />
-      </Menu.Item>
-
         <Link route="/campaigns/mydeck">
           <a className="item">My Deck</a>
         </Link>
