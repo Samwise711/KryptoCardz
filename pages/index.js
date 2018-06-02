@@ -6,13 +6,17 @@ import { Link } from '../routes';
 //import Campaign from '../ethereum/campaign';
 //import axios from 'axios';
 import web3 from '../ethereum/web3';
+import SearchSortPart from '../components/SearchSortPart';
+
 
 // class based component
 
 class CampaignIndex extends Component {
 
   state = {
-    value: ''
+    value: '',
+    sortBy1: 'created',
+    sortBy2: 'Low to high'
   };
 
   static async getInitialProps() {  // static allows one to run class function without creating an instance!!
@@ -46,6 +50,7 @@ class CampaignIndex extends Component {
 
 //dynamically compute route for description tag below
   renderCampaigns() {
+    let { sortBy1, sortBy2 } = this.state;
 
     //const accounts = await web3.eth.getAccounts();
     //const ownerCards = await factory.methods.getCardsByOwner(accounts[0]).call();
@@ -56,72 +61,46 @@ class CampaignIndex extends Component {
             image: <img src={'https://storage.googleapis.com/cryptocardz-c5066.appspot.com/'+(parseInt(request.Id)+1)+'.png'} width="150" style={{ marginLeft: '70px', marginTop: '15px', marginBottom: '15px', pointerEvents: 'none' }}/>,
             header: request.Name,
             meta: web3.utils.fromWei(request.Price, 'ether')+" ETH",
-            href: `/campaigns/${request.Id}`
+            href: `/campaigns/${request.Id}`,
+            created: request.CreatedDate,
             //fluid: true  // causes cards to go full width of frame
           };
     });
+    items.sort( (a,b) => {
+      if (a[sortBy1] > b[sortBy1]) return 1;
+      if (a[sortBy1] < b[sortBy1]) return - 1;
+      if (a[sortBy1] === b[sortBy1]) return 0;
+    })
 
+    if (sortBy2 === 'High to low') items.reverse()
     return <Card.Group items={items} />;
-
-
   }
 
 
 
   render() {
+    let { searchValue } = this.state;
+    let searchHandler = (event) => this.setState({ searchValue: event.target.value});
+    let sort1Handler = (event, data) => this.setState({ sortBy1: data.value})
+    let sort2Handler = (event, data) => this.setState({sortBy2: data.value})
+
     return (
     <Layout>
-
       <div style={{ marginTop: '25px' }}>
-
-
-
         <h3>Marketplace</h3>
 
         <Grid>
+          <SearchSortPart
+              searchHandler={searchHandler}
+              searchValue={searchValue}
+              sort1Handler={sort1Handler}
+              sort2Handler={sort2Handler}
+          />
           <Grid.Row>
-            <Grid.Column width={5}>
-        <Form>
-          <Form.Field>
-            <Input
-            className='icon'
-            placeholder='Search by name...'
-            value={this.state.value}
-            onChange={event => this.setState({ value: event.target.value})}
-              />
-          </Form.Field>
-        </Form>
-        </Grid.Column>
-
-        <Grid.Column width={8}>
-        <div style={{ float: 'left', marginLeft: '-25px' }}>
-        <Link route={`/search/${this.state.value}`} >
-          <a>
-            <Button floated="right" content="Search" />
-          </a>
-        </Link>
-        </div>
-
-        </Grid.Column>
-
-        <Grid.Column width={3}>
-
-        <div style={{ float: 'right' }}>
-        <Link route="/campaigns/new">
-          <a>
-            <Button floated="right" content="Create Card" icon="add" primary/>
-          </a>
-        </Link>
-        </div>
-
-        </Grid.Column>
-        </Grid.Row>
-
-        <Grid.Row>
-        <div style={{ marginLeft: '15px', marginTop: '10px', marginRight: '15px' }}>
-            {this.renderCampaigns()}
-          </div>
-        </Grid.Row>
+          <div style={{ marginLeft: '15px', marginTop: '10px', marginRight: '15px' }}>
+              {this.renderCampaigns()}
+            </div>
+          </Grid.Row>
         </Grid>
       </div>
     </Layout>
