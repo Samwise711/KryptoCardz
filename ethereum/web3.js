@@ -8,7 +8,8 @@ if (typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
 } else {
   // we are on the server or user is not running metamask
   const provider = new Web3.providers.HttpProvider(
-    'https://rinkeby.infura.io/JFy6fh9FoWmkxHXGR0JC' // portal to get access to Ethereum network
+    //'https://rinkeby.infura.io/JFy6fh9FoWmkxHXGR0JC' // portal to get access to Ethereum network
+    'https://ropsten.infura.io/JFy6fh9FoWmkxHXGR0JC'
   ); // url of infura node
 
   web3 = new Web3(provider);

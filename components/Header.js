@@ -21,7 +21,7 @@ export default () => {
           <a className="item">Marketplace</a>
         </Link>
 
-        <Link route="/campaigns/new">
+        <Link route="/campaigns/gems">
           <a className="item">+</a>
         </Link>
 

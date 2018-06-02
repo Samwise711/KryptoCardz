@@ -53,7 +53,7 @@ class CampaignIndex extends Component {
     const items = this.props.allStructs.map((request, index) => {
           return {
 
-            image: <img src={'https://storage.googleapis.com/cryptocardz-c5066.appspot.com/'+(parseInt(request.Id)+1)+'.png'} width="150" style={{ marginLeft: '55px', marginTop: '15px', marginBottom: '15px' }}/>,
+            image: <img src={'https://storage.googleapis.com/cryptocardz-c5066.appspot.com/'+(parseInt(request.Id)+1)+'.png'} width="150" style={{ marginLeft: '70px', marginTop: '15px', marginBottom: '15px', pointerEvents: 'none' }}/>,
             header: request.Name,
             meta: web3.utils.fromWei(request.Price, 'ether')+" ETH",
             href: `/campaigns/${request.Id}`
@@ -61,7 +61,8 @@ class CampaignIndex extends Component {
           };
     });
 
-    return <Card.Group items={items} itemsPerRow={4} />;
+    return <Card.Group items={items} />;
+
 
   }
 
@@ -70,6 +71,7 @@ class CampaignIndex extends Component {
   render() {
     return (
     <Layout>
+
       <div style={{ marginTop: '25px' }}>
 
 

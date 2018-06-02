@@ -1,6 +1,19 @@
 pragma solidity ^0.4.17;
 
+contract GemInterface {
+  function getGem(uint _id) public view returns (
+    uint morphTime,
+    uint price,
+    uint rarity,
+    uint id,
+    address owner
+  );
+}
+
 contract CampaignFactory {
+
+    address ckAddress = 0x6478F69CC8Da40031d7AaEe77BDfD50015e75237;
+    GemInterface gemContract = GemInterface(ckAddress);
 
     address public owner;
 
@@ -25,6 +38,8 @@ contract CampaignFactory {
     mapping (uint => uint) public getId;
     mapping (uint => uint) public getPrice;
 
+
+
     modifier onlyOwnerOf(uint _cardId) {
         require(msg.sender == cardToOwner[_cardId]);
         _;
@@ -48,6 +63,33 @@ contract CampaignFactory {
 
         ownerCardCount[msg.sender] = ownerCardCount[msg.sender] + 1;
         createdCardCount[msg.sender] = createdCardCount[msg.sender] + 1;
+
+    }
+
+    function createGem(uint _gemId, string name) public {
+
+        uint gemPrice;
+        uint gemRarity;
+        address gemOwner;
+        (,gemPrice,,,) = gemContract.getGem(_gemId);
+        (,,gemRarity,,) = gemContract.getGem(_gemId);
+        (,,,,gemOwner) = gemContract.getGem(_gemId);
+
+        CampaignDetails memory newStruct = CampaignDetails({
+            Name: name,
+            Id: campaignStructs.length,
+            Price: gemPrice,
+            CreatedDate: gemRarity
+
+        });
+
+        uint id = campaignStructs.push(newStruct) - 1;
+        cardToOwner[id] = gemOwner;
+        getName[id] = name;
+        getId[id] = campaignStructs.length;
+        getPrice[id] = gemPrice;
+
+        ownerCardCount[gemOwner] = ownerCardCount[gemOwner] + 1;
 
     }
 

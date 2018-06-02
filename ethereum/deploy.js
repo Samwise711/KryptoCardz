@@ -4,7 +4,8 @@ const compiledFactory = require('./build/CampaignFactory.json');
 
 const provider = new HDWalletProvider(
   'child orchard fury correct powder cabin obtain climb pen electric baby knife',
-  'https://rinkeby.infura.io/JFy6fh9FoWmkxHXGR0JC'
+  //'https://rinkeby.infura.io/JFy6fh9FoWmkxHXGR0JC'
+  'https://ropsten.infura.io/JFy6fh9FoWmkxHXGR0JC'
 );
 
 const web3 = new Web3(provider);
