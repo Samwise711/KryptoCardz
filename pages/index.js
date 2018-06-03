@@ -14,9 +14,9 @@ import SearchSortPart from '../components/SearchSortPart';
 class CampaignIndex extends Component {
 
   state = {
-    value: '',
+    searchValue: '',
     sortBy1: 'created',
-    sortBy2: 'Low to high'
+    sortBy2: 'Low to high',
   };
 
   static async getInitialProps() {  // static allows one to run class function without creating an instance!!
@@ -50,12 +50,12 @@ class CampaignIndex extends Component {
 
 //dynamically compute route for description tag below
   renderCampaigns() {
-    let { sortBy1, sortBy2 } = this.state;
+    let { sortBy1, sortBy2, searchValue } = this.state;
 
     //const accounts = await web3.eth.getAccounts();
     //const ownerCards = await factory.methods.getCardsByOwner(accounts[0]).call();
 
-    const items = this.props.allStructs.map((request, index) => {
+    let items = this.props.allStructs.map((request, index) => {
           return {
 
             image: <img src={'https://storage.googleapis.com/cryptocardz-c5066.appspot.com/'+(parseInt(request.Id)+1)+'.png'} width="150" style={{ marginLeft: '70px', marginTop: '15px', marginBottom: '15px', pointerEvents: 'none' }}/>,
@@ -73,6 +73,14 @@ class CampaignIndex extends Component {
     })
 
     if (sortBy2 === 'High to low') items.reverse()
+
+    if (searchValue !== '') {
+      items = items.filter( item => 
+        item.header
+          .toLowerCase()
+          .includes(searchValue.toLowerCase()))
+    }
+
     return <Card.Group items={items} />;
   }
 

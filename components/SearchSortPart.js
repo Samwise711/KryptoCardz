@@ -34,6 +34,7 @@ const sortOptions2 = [
 ]
 
 
+
 let SortBy = ({sort1Handler, sort2Handler}) =>
   <Grid.Column width={5}>
     <h4 style={{display: 'inline'}}>Sort by :   </h4>
@@ -62,6 +63,7 @@ let CreateNewBtn = () =>
         </Link>
       </div>
     </Grid.Column>
+
 
 let SearchValueBtn = ({searchValue}) =>
     <Grid.Column width={3}>
