@@ -36,4 +36,5 @@ app.prepare().then(() => {
     if (err) throw err;
     console.log('Ready on localhost:3000');
   });
+  
 });
