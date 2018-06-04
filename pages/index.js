@@ -9,6 +9,7 @@ import web3 from '../ethereum/web3';
 import SearchSortPart from '../components/SearchSortPart';
 
 
+
 // class based component
 
 class CampaignIndex extends Component {
@@ -19,7 +20,10 @@ class CampaignIndex extends Component {
     sortBy2: 'Low to high',
   };
 
+
+
   static async getInitialProps() {  // static allows one to run class function without creating an instance!!
+
 
     //const campaigns = await factory.methods.getDeployedCampaigns().call();
     const structCount = await factory.methods.getStructCount().call();
@@ -75,7 +79,7 @@ class CampaignIndex extends Component {
     if (sortBy2 === 'High to low') items.reverse()
 
     if (searchValue !== '') {
-      items = items.filter( item => 
+      items = items.filter( item =>
         item.header
           .toLowerCase()
           .includes(searchValue.toLowerCase()))

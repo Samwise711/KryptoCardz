@@ -1,6 +1,27 @@
 const { createServer } = require('http');
 const next = require('next');
 const app = next({
+  dev: process.env.NODE_ENV == 'production'  //something here about !
+
+});
+
+const routes = require('./routes');
+const handler = routes.getRequestHandler(app);
+
+app.prepare().then(() => {
+  createServer(handler).listen(process.env.PORT, err => {
+    if (err) throw err;
+    console.log('Ready on localhost:5000');
+  });
+});
+
+
+// use below code for testing, above code for pushing to production on Heroku...
+
+/*
+const { createServer } = require('http');
+const next = require('next');
+const app = next({
   dev: process.env.NODE_ENV !== 'production',
   conf: {
     webpack: config => {
@@ -16,6 +37,7 @@ const app = next({
         }
       }
 
+
       config.module.rules.push({        //epic hack!!!!!
       test: /\.(png|jpg)$/,
        loader: 'url-loader?limit=8192'
@@ -28,6 +50,8 @@ const app = next({
 
 });
 
+
+
 const routes = require('./routes');
 const handler = routes.getRequestHandler(app);
 
@@ -36,5 +60,6 @@ app.prepare().then(() => {
     if (err) throw err;
     console.log('Ready on localhost:3000');
   });
-  
+
 });
+*/
