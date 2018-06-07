@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import factory from '../ethereum/factory';
-import { Form, Input, Card, Button, Grid } from 'semantic-ui-react';
+import { Form, Input, Card, Button, Grid, Message } from 'semantic-ui-react';
 import Layout from '../components/LayoutSearch';
 import { Link } from '../routes';
 //import Campaign from '../ethereum/campaign';
@@ -100,6 +100,12 @@ class CampaignIndex extends Component {
     <Layout>
       <div style={{ marginTop: '25px' }}>
         <h3>Marketplace</h3>
+        <Message>
+          <Message.Header>Site Requirements</Message.Header>
+            <p>
+              Please be using MetaMask and the Ropsten Test Net to interact with this application. Otherwise errors may be thrown.
+            </p>
+        </Message>
 
         <Grid>
           <SearchSortPart
