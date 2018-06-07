@@ -108,12 +108,14 @@ class CampaignIndex extends Component {
         </Message>
 
         <Grid>
+          <div style={{ marginTop: '20px' }}>
           <SearchSortPart
               searchHandler={searchHandler}
               searchValue={searchValue}
               sort1Handler={sort1Handler}
               sort2Handler={sort2Handler}
           />
+          </div>
           <Grid.Row>
           <div style={{ marginLeft: '15px', marginTop: '10px', marginRight: '15px' }}>
               {this.renderCampaigns()}
