@@ -99,23 +99,22 @@ class CampaignIndex extends Component {
     return (
     <Layout>
       <div style={{ marginTop: '25px' }}>
+      <Message>
+        <Message.Header>Site Requirements</Message.Header>
+          <p>
+            Please be using MetaMask and the Ropsten Test Net to interact with this application. Otherwise errors may be thrown.
+          </p>
+      </Message>
         <h3>Marketplace</h3>
-        <Message>
-          <Message.Header>Site Requirements</Message.Header>
-            <p>
-              Please be using MetaMask and the Ropsten Test Net to interact with this application. Otherwise errors may be thrown.
-            </p>
-        </Message>
+
 
         <Grid>
-          <div style={{ marginTop: '20px' }}>
           <SearchSortPart
               searchHandler={searchHandler}
               searchValue={searchValue}
               sort1Handler={sort1Handler}
               sort2Handler={sort2Handler}
           />
-          </div>
           <Grid.Row>
           <div style={{ marginLeft: '15px', marginTop: '10px', marginRight: '15px' }}>
               {this.renderCampaigns()}
