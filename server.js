@@ -29,8 +29,8 @@ const app = next({
     webpack: config => {
       config.devtool = false;
       config.node = {
-      fs: 'empty',
-      child_process: 'empty'
+        fs: 'empty',
+        child_process: 'empty'
       };
 
       for (const r of config.module.rules) {
@@ -39,28 +39,23 @@ const app = next({
         }
       }
 
+      config.module.rules.push({
+        //epic hack!!!!!
+        test: /\.(png|jpg)$/,
+        loader: 'url-loader?limit=8192'
+      });
 
-      config.module.rules.push({        //epic hack!!!!!
-      test: /\.(png|jpg)$/,
-       loader: 'url-loader?limit=8192'
-     })
-
-     config.plugins.push({
-      new webpack.DefinePlugin({
+      config.plugins.push({
         'process.env': {
-           REACT_APP_KEY: process.env.REACT_APP_KEY
+          REACT_APP_KEY: process.env.REACT_APP_KEY
         }
-      })
-    });
+      });
 
       return config;
     }
   }
   //something here about !
-
 });
-
-
 
 const routes = require('./routes');
 const handler = routes.getRequestHandler(app);
@@ -70,5 +65,4 @@ app.prepare().then(() => {
     if (err) throw err;
     console.log('Ready on localhost:3000');
   });
-
 });
