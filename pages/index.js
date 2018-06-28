@@ -1,37 +1,35 @@
-import React, { Component } from 'react';
-import factory from '../ethereum/factory';
-import { Form, Input, Card, Button, Grid, Message } from 'semantic-ui-react';
-import Layout from '../components/LayoutSearch';
-import { Link } from '../routes';
+import React, { Component } from "react";
+import factory from "../ethereum/factory";
+import { Form, Input, Card, Button, Grid, Message } from "semantic-ui-react";
+import Layout from "../components/LayoutSearch";
+import { Link } from "../routes";
 //import Campaign from '../ethereum/campaign';
 //import axios from 'axios';
-import web3 from '../ethereum/web3';
-import SearchSortPart from '../components/SearchSortPart';
-
-
+import web3 from "../ethereum/web3";
+import SearchSortPart from "../components/SearchSortPart";
+import shapeshift from "shapeshift.io";
 
 // class based component
 
 class CampaignIndex extends Component {
-
   state = {
-    searchValue: '',
-    sortBy1: 'created',
-    sortBy2: 'Low to high',
+    searchValue: "",
+    sortBy1: "created",
+    sortBy2: "Low to high"
   };
 
-
-
-  static async getInitialProps() {  // static allows one to run class function without creating an instance!!
-
+  static async getInitialProps() {
+    // static allows one to run class function without creating an instance!!
 
     //const campaigns = await factory.methods.getDeployedCampaigns().call();
     const structCount = await factory.methods.getStructCount().call();
-    const allStructs = await Promise.all(  // get array of solidity Structs, trick
-      Array(parseInt(structCount)).fill().map((element, index) => {
-        return factory.methods.campaignStructs(index).call()
-
-      })
+    const allStructs = await Promise.all(
+      // get array of solidity Structs, trick
+      Array(parseInt(structCount))
+        .fill()
+        .map((element, index) => {
+          return factory.methods.campaignStructs(index).call();
+        })
     );
 
     /*
@@ -52,7 +50,7 @@ class CampaignIndex extends Component {
     return { allStructs };
   }
 
-//dynamically compute route for description tag below
+  //dynamically compute route for description tag below
   renderCampaigns() {
     let { sortBy1, sortBy2, searchValue } = this.state;
 
@@ -60,69 +58,97 @@ class CampaignIndex extends Component {
     //const ownerCards = await factory.methods.getCardsByOwner(accounts[0]).call();
 
     let items = this.props.allStructs.map((request, index) => {
-          return {
-
-            image: <img src={'https://storage.googleapis.com/cryptocardz-c5066.appspot.com/'+(parseInt(request.Id)+1)+'.png'} width="150" style={{ marginLeft: '70px', marginTop: '15px', marginBottom: '15px', pointerEvents: 'none' }}/>,
-            header: request.Name,
-            meta: web3.utils.fromWei(request.Price, 'ether')+" ETH",
-            href: `/campaigns/${request.Id}`,
-            created: request.CreatedDate,
-            //fluid: true  // causes cards to go full width of frame
-          };
+      return {
+        image: (
+          <img
+            src={
+              "https://storage.googleapis.com/cryptocardz-c5066.appspot.com/" +
+              (parseInt(request.Id) + 1) +
+              ".png"
+            }
+            width="150"
+            style={{
+              marginLeft: "70px",
+              marginTop: "15px",
+              marginBottom: "15px",
+              pointerEvents: "none"
+            }}
+          />
+        ),
+        header: request.Name,
+        meta: web3.utils.fromWei(request.Price, "ether") + " ETH",
+        href: `/campaigns/${request.Id}`,
+        created: request.CreatedDate
+        //fluid: true  // causes cards to go full width of frame
+      };
     });
-    items.sort( (a,b) => {
+    items.sort((a, b) => {
       if (a[sortBy1] > b[sortBy1]) return 1;
-      if (a[sortBy1] < b[sortBy1]) return - 1;
+      if (a[sortBy1] < b[sortBy1]) return -1;
       if (a[sortBy1] === b[sortBy1]) return 0;
-    })
+    });
 
-    if (sortBy2 === 'High to low') items.reverse()
+    if (sortBy2 === "High to low") items.reverse();
 
-    if (searchValue !== '') {
-      items = items.filter( item =>
-        item.header
-          .toLowerCase()
-          .includes(searchValue.toLowerCase()))
+    if (searchValue !== "") {
+      items = items.filter(item =>
+        item.header.toLowerCase().includes(searchValue.toLowerCase())
+      );
     }
+
+    shapeshift.coins(function(err, coinData) {
+      console.log(coinData); // =>
+    });
+
+    var pair = "btc_eth";
+
+    shapeshift.exchangeRate(pair, function(err, rate) {
+      console.log(rate); // => '158.71815287'
+    });
 
     return <Card.Group items={items} />;
   }
 
-
-
   render() {
     let { searchValue } = this.state;
-    let searchHandler = (event) => this.setState({ searchValue: event.target.value});
-    let sort1Handler = (event, data) => this.setState({ sortBy1: data.value})
-    let sort2Handler = (event, data) => this.setState({sortBy2: data.value})
+    let searchHandler = event =>
+      this.setState({ searchValue: event.target.value });
+    let sort1Handler = (event, data) => this.setState({ sortBy1: data.value });
+    let sort2Handler = (event, data) => this.setState({ sortBy2: data.value });
 
     return (
-    <Layout>
-      <div style={{ marginTop: '25px' }}>
-      <Message>
-        <Message.Header>Site Requirements</Message.Header>
-          <p>
-            Please be using MetaMask and the Ropsten Test Net to interact with this application. Otherwise errors may be thrown.
-          </p>
-      </Message>
-        <h3>Marketplace</h3>
+      <Layout>
+        <div style={{ marginTop: "25px" }}>
+          <Message>
+            <Message.Header>Site Requirements</Message.Header>
+            <p>
+              Please be using MetaMask and the Ropsten Test Net to interact with
+              this application. Otherwise errors may be thrown.
+            </p>
+          </Message>
+          <h3>Marketplace</h3>
 
-
-        <Grid>
-          <SearchSortPart
+          <Grid>
+            <SearchSortPart
               searchHandler={searchHandler}
               searchValue={searchValue}
               sort1Handler={sort1Handler}
               sort2Handler={sort2Handler}
-          />
-          <Grid.Row>
-          <div style={{ marginLeft: '15px', marginTop: '10px', marginRight: '15px' }}>
-              {this.renderCampaigns()}
-            </div>
-          </Grid.Row>
-        </Grid>
-      </div>
-    </Layout>
+            />
+            <Grid.Row>
+              <div
+                style={{
+                  marginLeft: "15px",
+                  marginTop: "10px",
+                  marginRight: "15px"
+                }}
+              >
+                {this.renderCampaigns()}
+              </div>
+            </Grid.Row>
+          </Grid>
+        </div>
+      </Layout>
     );
   }
 }

@@ -1,3 +1,5 @@
+/*
+
 const { createServer } = require('http');
 const next = require('next');
 const app = next({
@@ -15,10 +17,10 @@ app.prepare().then(() => {
   });
 });
 
-
+*/
 // use below code for testing, above code for pushing to production on Heroku...
 
-/*
+
 const { createServer } = require('http');
 const next = require('next');
 const app = next({
@@ -62,4 +64,3 @@ app.prepare().then(() => {
   });
 
 });
-*/
