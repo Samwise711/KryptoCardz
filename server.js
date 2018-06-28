@@ -45,11 +45,13 @@ const app = next({
         loader: 'url-loader?limit=8192'
       });
 
+      /*
       config.plugins.push({
         'process.env': {
           REACT_APP_KEY: process.env.REACT_APP_KEY
         }
       });
+*/
 
       return config;
     }
