@@ -1,21 +1,21 @@
-import React, { Component } from "react";
-import factory from "../ethereum/factory";
-import { Form, Input, Card, Button, Grid, Message } from "semantic-ui-react";
-import Layout from "../components/LayoutSearch";
-import { Link } from "../routes";
+import React, { Component } from 'react';
+import factory from '../ethereum/factory';
+import { Form, Input, Card, Button, Grid, Message } from 'semantic-ui-react';
+import Layout from '../components/LayoutSearch';
+import { Link } from '../routes';
 //import Campaign from '../ethereum/campaign';
 //import axios from 'axios';
-import web3 from "../ethereum/web3";
-import SearchSortPart from "../components/SearchSortPart";
-import shapeshift from "shapeshift.io";
+import web3 from '../ethereum/web3';
+import SearchSortPart from '../components/SearchSortPart';
+import shapeshift from 'shapeshift.io';
 
 // class based component
 
 class CampaignIndex extends Component {
   state = {
-    searchValue: "",
-    sortBy1: "created",
-    sortBy2: "Low to high"
+    searchValue: '',
+    sortBy1: 'created',
+    sortBy2: 'Low to high'
   };
 
   static async getInitialProps() {
@@ -31,6 +31,8 @@ class CampaignIndex extends Component {
           return factory.methods.campaignStructs(index).call();
         })
     );
+
+    console.log(webpack.constants.REACT_APP_KEY);
 
     /*
     const sortedArray = allStructs.sort(function(a, b) {
@@ -62,21 +64,21 @@ class CampaignIndex extends Component {
         image: (
           <img
             src={
-              "https://storage.googleapis.com/cryptocardz-c5066.appspot.com/" +
+              'https://storage.googleapis.com/cryptocardz-c5066.appspot.com/' +
               (parseInt(request.Id) + 1) +
-              ".png"
+              '.png'
             }
             width="150"
             style={{
-              marginLeft: "70px",
-              marginTop: "15px",
-              marginBottom: "15px",
-              pointerEvents: "none"
+              marginLeft: '70px',
+              marginTop: '15px',
+              marginBottom: '15px',
+              pointerEvents: 'none'
             }}
           />
         ),
         header: request.Name,
-        meta: web3.utils.fromWei(request.Price, "ether") + " ETH",
+        meta: web3.utils.fromWei(request.Price, 'ether') + ' ETH',
         href: `/campaigns/${request.Id}`,
         created: request.CreatedDate
         //fluid: true  // causes cards to go full width of frame
@@ -88,9 +90,9 @@ class CampaignIndex extends Component {
       if (a[sortBy1] === b[sortBy1]) return 0;
     });
 
-    if (sortBy2 === "High to low") items.reverse();
+    if (sortBy2 === 'High to low') items.reverse();
 
-    if (searchValue !== "") {
+    if (searchValue !== '') {
       items = items.filter(item =>
         item.header.toLowerCase().includes(searchValue.toLowerCase())
       );
@@ -100,7 +102,7 @@ class CampaignIndex extends Component {
       console.log(coinData); // =>
     });
 
-    var pair = "btc_eth";
+    var pair = 'btc_eth';
 
     shapeshift.exchangeRate(pair, function(err, rate) {
       console.log(rate); // => '158.71815287'
@@ -118,7 +120,7 @@ class CampaignIndex extends Component {
 
     return (
       <Layout>
-        <div style={{ marginTop: "25px" }}>
+        <div style={{ marginTop: '25px' }}>
           <Message>
             <Message.Header>Site Requirements</Message.Header>
             <p>
@@ -138,9 +140,9 @@ class CampaignIndex extends Component {
             <Grid.Row>
               <div
                 style={{
-                  marginLeft: "15px",
-                  marginTop: "10px",
-                  marginRight: "15px"
+                  marginLeft: '15px',
+                  marginTop: '10px',
+                  marginRight: '15px'
                 }}
               >
                 {this.renderCampaigns()}
