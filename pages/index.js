@@ -32,7 +32,7 @@ class CampaignIndex extends Component {
         })
     );
 
-    console.log(webpack.constants.REACT_APP_KEY);
+    console.log(process.env.REACT_APP_KEY);
 
     /*
     const sortedArray = allStructs.sort(function(a, b) {

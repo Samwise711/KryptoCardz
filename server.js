@@ -20,7 +20,7 @@ app.prepare().then(() => {
 */
 // use below code for testing, above code for pushing to production on Heroku...
 
-
+var webpack = require('webpack');
 const { createServer } = require('http');
 const next = require('next');
 const app = next({
@@ -44,6 +44,14 @@ const app = next({
       test: /\.(png|jpg)$/,
        loader: 'url-loader?limit=8192'
      })
+
+     config.plugins.push({
+      new webpack.DefinePlugin({
+        'process.env': {
+           REACT_APP_KEY: process.env.REACT_APP_KEY
+        }
+      })
+    });
 
       return config;
     }
