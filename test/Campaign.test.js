@@ -4,7 +4,6 @@ const Web3 = require('web3');
 const web3 = new Web3(ganache.provider());
 
 const compiledFactory = require('../ethereum/build/CampaignFactory.json');
-const compiledCampaign = require('../ethereum/build/Campaign.json');
 
 let accounts;
 let factory;
@@ -14,92 +13,192 @@ let campaign;
 beforeEach(async () => {
   accounts = await web3.eth.getAccounts();
   factory = await new web3.eth.Contract(JSON.parse(compiledFactory.interface))
-  .deploy({ data: compiledFactory.bytecode })
-  .send({ from: accounts[0], gas: '1000000' });
+    .deploy({ data: compiledFactory.bytecode })
+    .send({ from: accounts[0], gas: '3000000' });
 
-  await factory.methods.createCampaign('100').send({
-    from: accounts[0],
-    gas: '1000000'
+  const etherAmt = web3.utils.toWei('2', 'ether');
+  await factory.methods.createCampaign(etherAmt, 'Bulbasaur').send({
+    from: accounts[1],
+    gas: '3000000'
   });
 
-  [campaignAddress] = await factory.methods.getDeployedCampaigns().call();
-
-  campaign = await new web3.eth.Contract(
-    JSON.parse(compiledCampaign.interface),
-    campaignAddress
-  );
-
+  //  [campaignAddress] = await factory.methods.getDeployedCampaigns().call();
 });
 
 describe('Campaigns', () => {
-  it('deploys a factory and campaign', () => {
+  it('deploys the factory', () => {
     assert.ok(factory.options.address);
-    assert.ok(campaign.options.address);
   });
 
-  it('marks caller as campaign manager', async () => {
-    const manager = await campaign.methods.manager().call();
-    assert.equal(accounts[0], manager); // (what we hope it is, what it actually is)
+  it('marks original sender as contract owner', async () => {
+    const owner = await factory.methods.owner().call();
+    assert.equal(accounts[0], owner); // (what we hope it is, what it actually is)
   });
 
-  it('allows people to contribute money and marks them approvers', async () => {
-    await campaign.methods.contribute().send({
-      value: '200',
-      from: accounts[1]   // ganache creates an array of 10 test accts for us to use
-    });
-    const isContributor = await campaign.methods.approvers(accounts[1]).call();
-    assert(isContributor);
+  it('creates a new card Struct', async () => {
+    const struct = await factory.methods.campaignStructs(0).call();
+    //console.log(struct);
+    assert.ok(struct);
   });
 
-  it('ensures minimum contribution value is met', async () => {
-    try {
-      await campaign.methods.contribute().send({
-        value: '5',
-        from: accounts[1]
+  it('stores correct Struct Price', async () => {
+    const etherAmt = web3.utils.toWei('2', 'ether');
+    const struct = await factory.methods.campaignStructs(0).call();
+    assert.equal(etherAmt, struct.Price);
+  });
+
+  it('stores correct Struct Name', async () => {
+    const struct = await factory.methods.campaignStructs(0).call();
+    assert.equal('Bulbasaur', struct.Name);
+  });
+
+  it('maps id to correct owner address', async () => {
+    const struct = await factory.methods.campaignStructs(0).call();
+    const ID = struct.Id;
+    const cardOwner = await factory.methods.cardToOwner(ID).call();
+    assert.equal(accounts[1], cardOwner);
+  });
+
+  it('maps id to respective card name', async () => {
+    const struct = await factory.methods.campaignStructs(0).call();
+    const ID = struct.Id;
+    const cardName = await factory.methods.getName(ID).call();
+    assert.equal('Bulbasaur', cardName);
+  });
+
+  it('maps id to respective card price', async () => {
+    const etherAmt = web3.utils.toWei('2', 'ether');
+    const struct = await factory.methods.campaignStructs(0).call();
+    const ID = struct.Id;
+    const cardPrice = await factory.methods.getPrice(ID).call();
+    assert.equal(etherAmt, cardPrice);
+  });
+
+  it('update owners card count upon new card creation', async () => {
+    const cardCount = await factory.methods.ownerCardCount(accounts[1]).call();
+    assert.equal('1', cardCount);
+  });
+
+  it('update owners created count upon new card creation', async () => {
+    const createdCount = await factory.methods
+      .createdCardCount(accounts[1])
+      .call();
+    assert.equal('1', createdCount);
+  });
+
+  it('On transfer ownership remapping to new account', async () => {
+    const struct = await factory.methods.campaignStructs(0).call();
+    const ID = struct.Id;
+    const transferred = await factory.methods
+      .transfer(accounts[1], accounts[2], ID)
+      .send({
+        from: accounts[2],
+        gas: '3000000',
+        value: struct.Price
       });
+    const cardOwner = await factory.methods.cardToOwner(ID).call();
+    assert.equal(accounts[2], cardOwner);
+  });
+
+  it('On transfer money correctly transferred to old owner', async () => {
+    const balance = await web3.eth.getBalance(accounts[1]);
+    const struct = await factory.methods.campaignStructs(0).call();
+    const ID = struct.Id;
+    const transferred = await factory.methods
+      .transfer(accounts[1], accounts[2], ID)
+      .send({
+        from: accounts[2],
+        gas: '3000000',
+        value: struct.Price
+      });
+    const balance2 = await web3.eth.getBalance(accounts[1]);
+    //console.log(balance);
+    //console.log(balance2);
+    assert(balance2 > balance);
+  });
+
+  it('On transfer money correctly reduced from buyers acct', async () => {
+    const balance = await web3.eth.getBalance(accounts[2]);
+    const struct = await factory.methods.campaignStructs(0).call();
+    const ID = struct.Id;
+    const transferred = await factory.methods
+      .transfer(accounts[1], accounts[2], ID)
+      .send({
+        from: accounts[2],
+        gas: '3000000',
+        value: struct.Price
+      });
+    const balance2 = await web3.eth.getBalance(accounts[2]);
+    //console.log(balance);
+    //console.log(balance2);
+    assert(balance2 < balance);
+  });
+
+  it('On transfer buyers Card Count increases by 1', async () => {
+    const cardCount = await factory.methods.ownerCardCount(accounts[2]).call();
+    const struct = await factory.methods.campaignStructs(0).call();
+    const ID = struct.Id;
+    const transferred = await factory.methods
+      .transfer(accounts[1], accounts[2], ID)
+      .send({
+        from: accounts[2],
+        gas: '3000000',
+        value: struct.Price
+      });
+    const cardCount2 = await factory.methods.ownerCardCount(accounts[2]).call();
+    assert(cardCount2 > cardCount);
+  });
+
+  it('On transfer old owners Card Count decreases by 1', async () => {
+    const cardCount = await factory.methods.ownerCardCount(accounts[1]).call();
+    const struct = await factory.methods.campaignStructs(0).call();
+    const ID = struct.Id;
+    const transferred = await factory.methods
+      .transfer(accounts[1], accounts[2], ID)
+      .send({
+        from: accounts[2],
+        gas: '3000000',
+        value: struct.Price
+      });
+    const cardCount2 = await factory.methods.ownerCardCount(accounts[1]).call();
+    assert(cardCount2 < cardCount);
+  });
+
+  it('Transfer fails if owner tries to buy own card', async () => {
+    try {
+      const struct = await factory.methods.campaignStructs(0).call();
+      const ID = struct.Id;
+      const transferred = await factory.methods
+        .transfer(accounts[1], accounts[1], ID)
+        .send({
+          from: accounts[1],
+          gas: '3000000',
+          value: struct.Price
+        });
       assert(false);
     } catch (err) {
       assert(err);
     }
   });
 
-  it('allows manager ability to make payment request', async () => {
-    await campaign.methods
-      .createRequest('Buy batteries', '100', accounts[1])
-      .send({
-        from: accounts[0],
-        gas: '1000000'
-      });
-
-    const request = await campaign.methods.requests(0).call(); //requests(index)
-    assert.equal('Buy batteries', request.description); //.description is property of request struct
+  it('Transfer fails if price value sent not enough', async () => {
+    try {
+      const struct = await factory.methods.campaignStructs(0).call();
+      const ID = struct.Id;
+      const transferred = await factory.methods
+        .transfer(accounts[1], accounts[2], ID)
+        .send({
+          from: accounts[2],
+          gas: '3000000',
+          value: struct.Price - 1000000000
+        });
+      assert(false);
+    } catch (err) {
+      assert(err);
+    }
   });
 
-  it('processes requests', async () => {
-    await campaign.methods.contribute().send({
-      value: web3.utils.toWei('10', 'ether'),
-      from: accounts[0]
-    });
-
-    await campaign.methods
-    .createRequest('Buy TRACTORS', web3.utils.toWei('5', 'ether'), accounts[1])
-    .send({from: accounts[0], gas: '1000000' });
-
-    await campaign.methods.approveRequest(0).send({
-      from: accounts[0],
-      gas: '1000000'
-    });
-
-    await campaign.methods.finalizeRequest(0).send({ //finalizeRequest(index_of_Request)
-      from: accounts[0], //only manager can finalize request
-      gas: '1000000'
-    });
-
-    let balance = await web3.eth.getBalance(accounts[1]); //get balance of any address on ethereum, returns string
-    balance = web3.utils.fromWei(balance, 'ether');
-    balance = parseFloat(balance); //steps to convert to number
-    console.log(balance);
-    assert(balance > 104); //one limitation of Ganache, does not reset account balances between tests
-  });
-
+  // still need to test ChangePrice module
+  // also make sure only card owner can change Price
+  // maybe some other small tests too...
 });

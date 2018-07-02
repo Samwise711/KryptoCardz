@@ -7,7 +7,6 @@ import { Link } from '../routes';
 //import axios from 'axios';
 import web3 from '../ethereum/web3';
 import SearchSortPart from '../components/SearchSortPart';
-import shapeshift from 'shapeshift.io';
 
 // class based component
 
@@ -31,8 +30,6 @@ class CampaignIndex extends Component {
           return factory.methods.campaignStructs(index).call();
         })
     );
-
-    console.log(process.env.REACT_APP_KEY);
 
     /*
     const sortedArray = allStructs.sort(function(a, b) {
@@ -97,16 +94,6 @@ class CampaignIndex extends Component {
         item.header.toLowerCase().includes(searchValue.toLowerCase())
       );
     }
-
-    shapeshift.coins(function(err, coinData) {
-      console.log(coinData); // =>
-    });
-
-    var pair = 'btc_eth';
-
-    shapeshift.exchangeRate(pair, function(err, rate) {
-      console.log(rate); // => '158.71815287'
-    });
 
     return <Card.Group items={items} />;
   }
